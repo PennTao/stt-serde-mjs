@@ -1,6 +1,6 @@
 {
   "name": "stt-serde-mjs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "STT serializer and deserializer for Douyu danmaku",
   "main": "src/index.mjs",
   "scripts": {
@@ -17,7 +17,10 @@
     "serde",
     "danmaku",
     "serializer",
-    "deserializer"
+    "deserializer",
+    "斗鱼",
+    "弹幕",
+    "序列化"
   ],
   "author": "Tao Lei",
   "license": "ISC",
