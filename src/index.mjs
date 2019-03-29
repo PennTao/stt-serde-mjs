@@ -1,5 +1,5 @@
-const regex = /[^/]+@=[^/]*/g;
-const regexArraySplitter = /[^/]+(?:[^/]*)*/g;
+const regex = /[^/]+@=[^/]*\//g;
+const regexArraySplitter = /[^/]+\//g;
 
 /**
  * A function to serialize a JSON into string
@@ -18,10 +18,10 @@ const serialize = (records) => {
   }
   let serializedString = '';
   if (Array.isArray(records)) {
-    return records.map(record => serialize(record) + '/').join('');
+    return records.map(record => serialize(record).replace(/@/g, '@A').replace(/\//g, '@S') + '/').join('');
   }
   Object.entries(records).forEach(([key, value]) => {
-    serializedString = serializedString + serialize(key) + '@=' + serialize(value) + '/';
+    serializedString = serializedString + serialize(key).replace(/@/g, '@A').replace(/\//g, '@S') + '@=' + serialize(value).replace(/@/g, '@A').replace(/\//g, '@S') + '/';
   });
 
   return serializedString;
@@ -39,19 +39,21 @@ const deserialize = (message) => {
   }
   const record = {};
   const entries = message.match(regex);
-  const items = message.match(regexArraySplitter);
   if (entries !== null) {
     entries.forEach((entry) => {
       const kvps = entry.split('@=');
-      const key = kvps[0];
-      const value = kvps[1];
+      const key = kvps[0].replace(/@S/g, '/').replace(/@A/g, '@');
+      const value = kvps[1].slice(0, -1).replace(/@S/g, '/').replace(/@A/g, '@');
       record[deserialize(key)] = deserialize(value);
     });
     return record;
-  } if (items !== null && items.length > 1) {
-    return items.map(item => deserialize(item));
   }
-  return message.replace(/@A/g, '@').replace(/@S/g, '/');
+  const items = message.match(regexArraySplitter);
+
+  if (items !== null) {
+    return items.map(item => deserialize(item.slice(0, -1).replace(/@S/g, '/').replace(/@A/g, '@')));
+  }
+  return message.replace(/@S/g, '/').replace(/@A/g, '@');
 };
 
 export {
