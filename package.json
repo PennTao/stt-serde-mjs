@@ -1,6 +1,6 @@
 {
   "name": "stt-serde-mjs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "STT serializer and deserializer for Douyu danmaku",
   "main": "src/index.mjs",
   "scripts": {
